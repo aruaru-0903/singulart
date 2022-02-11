@@ -1,0 +1,31 @@
+with a as (
+SELECT 
+sum(itemPaidAmountAfterAnyDiscountHistoricalEur) as revenue
+,delivery_country
+,client_ID
+,min(paid_at) as firstday
+
+ FROM `cni-ca-dfp.analysts.aru_test_data`
+ WHERE delivery_country in ('US','JP')
+ GROUP BY 2,3
+),
+b as(
+SELECT
+revenue
+,delivery_country
+,client_ID
+,firstday
+,rank()over(partition by client_ID,delivery_country ORDER BY firstday asc) as rank
+FROM a 
+),
+
+c as (
+SELECT *
+FROM b where rank = 1
+)
+
+SELECT 
+sum(revenue)/count(distinct client_ID )as Average_revenue_first_purchase
+,delivery_country
+FROM c
+GROUP BY 2
