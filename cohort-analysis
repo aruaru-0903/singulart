@@ -1,0 +1,125 @@
+1) first find out maximum month window from the first purchase to the last purchase
+
+
+with a as (
+SELECT
+  client_ID as id,
+  min(DATE_TRUNC(paid_at,month)) AS min_paid_month,
+  max(DATE_TRUNC(paid_at,month)) AS max_paid_month
+FROM
+  `cni-ca-dfp.analysts.aru_test_data`
+GROUP BY
+  1
+)
+SELECT 
+id, 
+round(date_diff(max_paid_month, min_paid_month,day)/30,1) as est_gap_month
+FROM a
+GROUP BY 1,2
+ORDER BY 2 desc
+
+
+
+___________________________________
+
+2) Cohort query
+
+
+
+SELECT
+    DATE_TRUNC(m1.paid_at, MONTH) as first_month,
+    count(distinct m1.client_ID) as unique_customers_first_month,
+    count(distinct m1.client_ID) / COUNT(distinct  m1.client_ID) AS month_0,
+    count(distinct m2.client_ID) / COUNT(distinct  m1.client_ID) AS month_1, ---///1 month after the first purchase///---
+    count(distinct m3.client_ID) / COUNT(distinct  m1.client_ID) AS month_2, ---///2 month after the first pucrchase///---
+    count(distinct m4.client_ID) / COUNT(distinct  m1.client_ID) AS month_3,
+    count(distinct m5.client_ID) / COUNT(distinct  m1.client_ID) AS month_4,
+    count(distinct m6.client_ID) / COUNT(distinct  m1.client_ID) AS month_5,
+    count(distinct m7.client_ID) / COUNT(distinct  m1.client_ID) AS month_6,
+    count(distinct m8.client_ID) / COUNT(distinct  m1.client_ID) AS month_7,
+    count(distinct m9.client_ID) / COUNT(distinct  m1.client_ID) AS month_8,
+    count(distinct m10.client_ID) / COUNT(distinct  m1.client_ID) AS month_9,
+    count(distinct m11.client_ID) / COUNT(distinct  m1.client_ID) AS month_10,
+    count(distinct m12.client_ID) / COUNT(distinct  m1.client_ID) AS month_11,
+    count(distinct m13.client_ID) / COUNT(distinct  m1.client_ID) AS month_12,
+    count(distinct m14.client_ID) / COUNT(distinct  m1.client_ID) AS month_13,
+    count(distinct m15.client_ID) / COUNT(distinct  m1.client_ID) AS month_14,
+    count(distinct m16.client_ID) / COUNT(distinct  m1.client_ID) AS month_15,
+    count(distinct m17.client_ID) / COUNT(distinct  m1.client_ID) AS month_16,
+    count(distinct m18.client_ID) / COUNT(distinct  m1.client_ID) AS month_17,
+    count(distinct m19.client_ID) / COUNT(distinct  m1.client_ID) AS month_18,
+    count(distinct m20.client_ID) / COUNT(distinct  m1.client_ID) AS month_19,
+    count(distinct m21.client_ID) / COUNT(distinct  m1.client_ID) AS month_20,
+    count(distinct m22.client_ID) / COUNT(distinct  m1.client_ID) AS month_21,
+    count(distinct m23.client_ID) / COUNT(distinct  m1.client_ID) AS month_22,
+    count(distinct m24.client_ID) / COUNT(distinct  m1.client_ID) AS month_23,
+    count(distinct m25.client_ID) / COUNT(distinct  m1.client_ID) AS month_24,
+    count(distinct m26.client_ID) / COUNT(distinct  m1.client_ID) AS month_25,
+    count(distinct m27.client_ID) / COUNT(distinct  m1.client_ID) AS month_26,
+    count(distinct m28.client_ID) / COUNT(distinct  m1.client_ID) AS month_27,
+    count(distinct m29.client_ID) / COUNT(distinct  m1.client_ID) AS month_28,
+    count(distinct m30.client_ID) / COUNT(distinct  m1.client_ID) AS month_29 ---///largest gap of first to last purchase month was 28.4 months in the data set///---
+FROM
+  `cni-ca-dfp.analysts.aru_test_data` m1
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m2 ON m1.client_ID = m2.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m2.paid_at), MONTH),  INTERVAL 1 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m3 ON m1.client_ID = m3.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m3.paid_at), MONTH),  INTERVAL 2 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m4 ON m1.client_ID = m4.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m4.paid_at), MONTH),  INTERVAL 3 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m5 ON m1.client_ID = m5.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m5.paid_at), MONTH),  INTERVAL 4 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m6 ON m1.client_ID = m6.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m6.paid_at), MONTH),  INTERVAL 5 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m7 ON m1.client_ID = m7.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m7.paid_at), MONTH),  INTERVAL 6 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m8 ON m1.client_ID = m8.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m8.paid_at), MONTH),  INTERVAL 7 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m9 ON m1.client_ID = m9.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m9.paid_at), MONTH),  INTERVAL 8 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m10 ON m1.client_ID = m10.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m10.paid_at), MONTH),  INTERVAL 9 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m11 ON m1.client_ID = m11.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m11.paid_at), MONTH),  INTERVAL 10 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m12 ON m1.client_ID = m12.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m12.paid_at), MONTH),  INTERVAL 11 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m13 ON m1.client_ID = m13.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m13.paid_at), MONTH),  INTERVAL 12 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m14 ON m1.client_ID = m14.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m14.paid_at), MONTH),  INTERVAL 13 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m15 ON m1.client_ID = m15.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m15.paid_at), MONTH),  INTERVAL 14 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m16 ON m1.client_ID = m16.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m16.paid_at), MONTH),  INTERVAL 15 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m17 ON m1.client_ID = m17.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m17.paid_at), MONTH),  INTERVAL 16 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m18 ON m1.client_ID = m18.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m18.paid_at), MONTH),  INTERVAL 17 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m19 ON m1.client_ID = m19.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m19.paid_at), MONTH),  INTERVAL 18 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m20 ON m1.client_ID = m20.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m20.paid_at), MONTH),  INTERVAL 19 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m21 ON m1.client_ID = m21.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m21.paid_at), MONTH),  INTERVAL 20 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m22 ON m1.client_ID = m22.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m22.paid_at), MONTH),  INTERVAL 21 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m23 ON m1.client_ID = m23.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m23.paid_at), MONTH),  INTERVAL 22 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m24 ON m1.client_ID = m24.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m24.paid_at), MONTH),  INTERVAL 23 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m25 ON m1.client_ID = m25.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m25.paid_at), MONTH),  INTERVAL 24 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m26 ON m1.client_ID = m26.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m26.paid_at), MONTH),  INTERVAL 25 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m27 ON m1.client_ID = m27.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m27.paid_at), MONTH),  INTERVAL 26 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m28 ON m1.client_ID = m28.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m28.paid_at), MONTH),  INTERVAL 27 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m29 ON m1.client_ID = m29.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m29.paid_at), MONTH),  INTERVAL 28 MONTH)
+LEFT JOIN `cni-ca-dfp.analysts.aru_test_data` m30 ON m1.client_ID = m30.client_ID 
+    AND DATE_TRUNC(date(m1.paid_at), MONTH) = DATE_SUB(DATE_TRUNC(date(m30.paid_at), MONTH),  INTERVAL 29 MONTH)
+
+WHERE m1.paid_at is not null ---///remove error in the raw data///---
+GROUP BY 1
+ORDER BY 1 asc
