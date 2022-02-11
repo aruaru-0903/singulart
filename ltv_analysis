@@ -1,0 +1,31 @@
+with user as(
+SELECT 
+  delivery_country
+  ,client_ID
+  ,sum(itemPaidAmountAfterAnyDiscountHistoricalEur) as sales
+  ,count(distinct orderId) as orders
+  ,min(paid_at) first_purchase
+  ,max(paid_at) last_purchase
+FROM
+  `cni-ca-dfp.analysts.aru_test_data`
+WHERE 
+  delivery_country is not null ---///remove error///---
+GROUP BY
+  1,2
+ORDER BY 3 desc
+)
+
+
+SELECT
+delivery_country
+,count(client_ID) as total_cutomers
+,sum(sales) as total_sales
+,sum(orders) as total_orders
+,round(sum(sales)/sum(orders),2)  as AOV
+,round(sum(sales)/count(client_ID),0) as ARPU
+,round(sum(orders)/count(client_ID),2) as frequency
+,round((sum(sales)/count(client_ID))*(sum(orders)/count(client_ID)),2) as LTV ---///Avg customer value * Avg Frequency///---
+
+FROM user
+GROUP BY 1
+ORDER BY 2 desc
