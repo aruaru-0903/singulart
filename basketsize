@@ -1,0 +1,18 @@
+with a as(
+SELECT 
+orderId
+,count(*) as basketsize
+,sum(itemPaidAmountAfterAnyDiscountHistoricalEur) as revenue
+,date_trunc(paid_at,month) as month
+ FROM `cni-ca-dfp.analysts.aru_test_data` 
+WHERE orderId is not null
+ GROUP BY 1,4
+)
+select 
+month 
+,avg(basketsize) as mean_average_basket_size
+,count(distinct orderID) as total_orders
+,sum(revenue)/count(orderId) as AOV
+FROM a 
+GROUP BY 1
+ORDER by 1 asc
